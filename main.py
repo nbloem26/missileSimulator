@@ -1,6 +1,5 @@
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 
 
 class vehicle():
@@ -125,7 +124,5 @@ while t < tf:
     print('score = ', score)
     break
 
-# print out engagment
-plt.figure
-plt.plot(TM.tgt_x, TM.tgt_y, color='red')
-plt.plot(TM.msl_x, TM.msl_y, color='blue')
+TM.to_csv("Data/telemetry.csv", index=False)
+
