@@ -21,10 +21,11 @@ def format_metric(metric_raw):
 # put all widgets in sidebar and have a subtitle
 with st.sidebar:
     st.subheader("Configure the plot")
-    # widget to choose which continent to display
+    initialMslX = st.text_input("Missile Initial X Position", value="0", max_chars=10, type="default")
+    initialMslY = st.text_input("Missile Initial Y Position", value="0", max_chars=10, type="default")
+    initialTgtX = st.text_input("Target Initial X Position", value="0", max_chars=10, type="default")
+    initialTgtY = st.text_input("Target Initial Y Position", value="500", max_chars=10, type="default")
     navGain = st.slider(label = "Navigation Constant", min_value = 2.0, max_value = 7.0, value = 3.0, step=0.1)
-    # navGain = st.selectbox(label = "Navigation Constant", options = list(np.arange(3,7,0.5)))
-    # widget to choose which metric to display
     metrics = st.multiselect(label = "Which parameters should be plotted?", options = metric_labels.keys(), format_func=format_metric)
 
 def plotVarVsTime(figure, time, mslVar, tgtVar, ylabel):
@@ -58,10 +59,13 @@ t0, t = 0.0, 0.0
 tf = 100
 dt = 0.01
 
-tgt = vehicle(np.array([   0.0, 500.0]), np.array([25.0,  0.0]))
-msl = vehicle(np.array([   0.0,   0.0]), np.array([ 0.0, 20.0]))
-tgt_pos_prev = np.array([0.0, 0.0])
-msl_pos_prev = np.array([0.0, 0.0])
+# Pull in initial values
+tgt = vehicle(np.array([ float(initialTgtX), float(initialTgtY)]), np.array([25.0,  0.0]))
+unit_vec = np.array([float(initialTgtX)-float(initialMslX), float(initialTgtY)-float(initialMslY)])
+unit_vec = unit_vec/np.linalg.norm(unit_vec)
+msl = vehicle(np.array([ float(initialMslX), float(initialMslY)]), 20*unit_vec)
+tgt_pos_prev = np.array([ float(initialTgtX), float(initialTgtY)])
+msl_pos_prev = np.array([ float(initialMslX), float(initialMslY)])
 r_dot = 0.0
 r_dot_prev = 0.0
 
@@ -80,7 +84,7 @@ while t < tf:
   else:
     thrust = 0
   # drag = 1/2 rho v^2 beta
-  beta = 0.0075
+  beta = 0.005
   rho = 1.12
   drag = 1/2*rho*np.linalg.norm(msl.vel)**2*beta
   msl_thrust = thrust - drag
@@ -147,7 +151,7 @@ while t < tf:
   MissileInfo.append(TM_Dataframe)
 
   # exit if positive range rate
-  if r_dot > 0.0:
+  if r_dot > 0.0 and t > 2:
     
     # # Calculate PCA
     r_dot_temp = r_dot_prev
