@@ -8,7 +8,7 @@ from missileSimulation import runSimulation
 st.set_page_config(layout="wide")
 st.title("2D Missile Simulator Environment")
 st.markdown(
-    "This is an example simulation of a 2D missile engagment. The engagement is configurable with initial conditions and a navigation gain. " 
+    "This is an example simulation of a 2D missile engagment. The engagement is configurable with initial conditions and a navigation gain. "
     "This navigation gain is used in the proportional navigation guidance law used by the missile. "
     "The time listed is the time of flight of the missle. "
     "Miss distance is the final point of closest approach. "
